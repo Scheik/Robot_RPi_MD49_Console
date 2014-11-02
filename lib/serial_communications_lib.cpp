@@ -27,7 +27,7 @@ int openSerialPort(const char * device, int bps)
    struct termios neu;
    char buf[128];
 
-   fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK);
+   fd = open(device, O_RDWR | O_NOCTTY);
 
    if (fd == -1)
    {
