@@ -91,7 +91,6 @@ void parse_input (void){
 }
 
 void print_help(void){
-	printf("Console program to remote control robot hardware functions:\n");
 	printf("---------------------------------------------------------- \n");
 	printf("Enter 'w', 'a', 's', 'd'\n");
 	printf("to drive forward, left, right, backward full speed. \n");
