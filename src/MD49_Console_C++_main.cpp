@@ -19,6 +19,7 @@
 
 using namespace std;
 
+void read_MD49_Data (void);
 void set_MD49_Commands (void);
 void print_help(void);
 void parse_input (void);
@@ -88,6 +89,9 @@ void parse_input (void){
 	if (input==104){								// "h" = print help again
 		print_help();
 	}
+	if (input==82){									// "R" = read MD49data
+		read_MD49_Data();
+	}
 }
 
 void print_help(void){
@@ -95,6 +99,8 @@ void print_help(void){
 	printf("Enter 'w', 'a', 's', 'd'\n");
 	printf("to drive forward, left, right, backward full speed. \n");
 	printf("Enter 'x' to stop drives \n");
+	printf("---------------------------------------------------------- \n");
+	printf("Enter 'R' to read complete MD49 Data \n");
 	printf("---------------------------------------------------------- \n");
 	printf("Enter 'q' to quit program \n");
 	printf("Enter 'h' to show instructions again \n");
@@ -119,4 +125,81 @@ void set_MD49_Commands (void){
 	serialBuffer[14] = set_Encoder2Byte3;
 	serialBuffer[15] = set_Encoder2Byte4;
 	writeBytes(fd, 16);
+}
+
+void read_MD49_Data (void){
+	serialBuffer[0] = 82;							// 82=R Steuerbyte um alle Daten vom MD49 zu lesen
+	serialBuffer[1] = 0;
+	serialBuffer[2] = 0;
+	serialBuffer[3] = 0;
+	serialBuffer[4] = 0;
+	serialBuffer[5] = 0;
+	serialBuffer[6] = 0;
+	serialBuffer[7] = 0;
+	serialBuffer[8] = 0;
+	serialBuffer[9] = 0;
+	serialBuffer[10] = 0;
+	serialBuffer[11] = 0;
+	serialBuffer[12] = 0;
+	serialBuffer[13] = 0;
+	serialBuffer[14] = 0;
+	serialBuffer[15] = 0;
+	writeBytes(fd, 16);
+	//usleep(400000);
+	//Daten lesen und in Array schreiben
+	readBytes(fd, 18);
+	printf("Encoder1 Byte 1: ");
+	cout<<serialBuffer[0];
+	printf("\n");
+	printf("Encoder1 Byte 2: ");
+	cout<<serialBuffer[1];
+	printf("\n");
+	printf("Encoder1 Byte 3: ");
+	cout<<serialBuffer[2];
+	printf("\n");
+	printf("Encoder1 Byte 4: ");
+	cout<<serialBuffer[3];
+	printf("\n");
+	printf("Encoder2 Byte 1: ");
+	cout<<serialBuffer[4];
+	printf("\n");
+	printf("Encoder2 Byte 2: ");
+	cout<<serialBuffer[5];
+	printf("\n");
+	printf("Encoder2 Byte 3: ");
+	cout<<serialBuffer[6];
+	printf("\n");
+	printf("Encoder2 Byte 4: ");
+	cout<<serialBuffer[7];
+	printf("\n");
+	printf("Speed1: ");
+	cout<<serialBuffer[8];
+	printf("\n");
+	printf("Speed2: ");
+	cout<<serialBuffer[9];
+	printf("\n");
+	printf("Volts: ");
+	cout<<serialBuffer[10];
+	printf("\n");
+	printf("Current1: ");
+	cout<<serialBuffer[11];
+	printf("\n");
+	printf("Current2: ");
+	cout<<serialBuffer[12];
+	printf("\n");
+	printf("Error: ");
+	cout<<serialBuffer[13];
+	printf("\n");
+	printf("Acceleration: ");
+	cout<<serialBuffer[14];
+	printf("\n");
+	printf("Mode: ");
+	cout<<serialBuffer[15];
+	printf("\n");
+	printf("Regulator: ");
+	cout<<serialBuffer[16];
+	printf("\n");
+	printf("Timeout: ");
+	cout<<serialBuffer[17];
+	printf("\n");
 }

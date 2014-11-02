@@ -15,6 +15,6 @@ extern "C" int  openSerialPort (const char * device, int bps);
 extern struct termios orig;
 extern int filedesc;
 extern int fd;
-extern unsigned char serialBuffer[16];						// Serial buffer to store data for I/O
+extern unsigned char serialBuffer[18];						// Serial buffer to store data for I/O
 
 #endif /* SERIAL_COMMUNICATIONS_LIB_H_ */

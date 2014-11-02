@@ -20,7 +20,7 @@ using namespace std;
 struct termios orig;
 int filedesc;
 int fd;
-unsigned char serialBuffer[16];						// Serial buffer to store data for I/O
+unsigned char serialBuffer[18];						// Serial buffer to store data for I/O
 
 int openSerialPort(const char * device, int bps)
 {
