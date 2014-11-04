@@ -47,10 +47,13 @@ int main(int argc, char **argv){
    usleep(40000);									// Sleep for UART to power up and set options
 
    printf("MD49_Console started \n");
-   print_help();
+
 
    while(1){
-		printf("Comand:");
+	   printf("\033[2J");        /*  clear the screen  */
+	   printf("\033[H");         /*  position cursor at top-left corner */
+	   print_help();
+	   printf("Command:");
 		scanf("%s",&input);
 		parse_input();
 		if (input==113){								// "q" = quit programm
@@ -170,4 +173,7 @@ void read_MD49_Data (void){
 	printf("Mode: %i \n",serialBuffer[15]);
 	printf("Regulator: %i \n",serialBuffer[16]);
 	printf("Timeout: %i \n",serialBuffer[17]);
+	printf ("Press a key to continue...");
+	scanf("%s",&input);
+
 }
