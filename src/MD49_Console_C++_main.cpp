@@ -38,59 +38,77 @@ unsigned char set_Encoder1Byte4=0;
 unsigned char set_Encoder2Byte1=0;
 unsigned char set_Encoder2Byte2=0;
 unsigned char set_Encoder2Byte3=0;
-unsigned char set_Encoder2Byte4=0;
-char input;											// speichert eingegebene Kommandos
+unsigned char set_Encoder2Byte4=0;										// speichert eingegebene Kommandos
+char input;
+
+int getch()
+{
+  static struct termios oldt, newt;
+  tcgetattr( STDIN_FILENO, &oldt);           // save old settings
+  newt = oldt;
+  newt.c_lflag &= ~(ICANON);                 // disable buffering
+  tcsetattr( STDIN_FILENO, TCSANOW, &newt);  // apply new settings
+
+  int c = getchar();  // read character (non-blocking)
+
+  tcsetattr( STDIN_FILENO, TCSANOW, &oldt);  // restore old settings
+  return c;
+}
 
 int main(int argc, char **argv){
-   filedesc = openSerialPort("/dev/ttyAMA0", B38400);
-   if (filedesc == -1) exit(1);
-   usleep(40000);									// Sleep for UART to power up and set options
+	filedesc = openSerialPort("/dev/ttyAMA0", B38400);
+	if (filedesc == -1) exit(1);
+										// Sleep for UART to power up and set options
+	printf("MD49_Console started \n");
+	print_help();
 
-   printf("MD49_Console started \n");
-
+   //Establish Connection
+   //...
+   //
 
    while(1){
-	   printf("\033[2J");        /*  clear the screen  */
-	   printf("\033[H");         /*  position cursor at top-left corner */
-	   print_help();
-	   printf("Command:");
-		scanf("%s",&input);
-		parse_input();
-		if (input==113){								// "q" = quit programm
-			close(fd);									// Close port
-			return 0;									// exit
-		}
+	   	    input = getch();						// call  non-blocking input function
+			//scanf("%s",&input);
+			parse_input();
+			//read_MD49_Data();
+			if (input==113){								// "q" = quit programm
+				printf("\n");
+				close(fd);									// Close port
+				return 0;									// exit
+			}
     }//end.mainloop
 }//end.mainfunction
 
 void parse_input (void){
 	if (input==119){								// input="w" = Full Forward
+		print_help();
 		set_Speed1=255;
 		set_Speed2=255;
 		set_MD49_Commands();
 	}
 	if (input==120){								// "x" = Stop
+		print_help();
 		set_Speed1=128;
 		set_Speed2=128;
 		set_MD49_Commands();
 	}
 	if (input==97){									// "a" = Full Left
+		print_help();
 		set_Speed1=0;
 		set_Speed2=255;
 		set_MD49_Commands();
 	}
 	if (input==100){								// "d" = Full Right
+		print_help();
 		set_Speed1=255;
 		set_Speed2=0;
 		set_MD49_Commands();
 	}
 	if (input==115){								// "s" = Full Backward
+		print_help();
 		set_Speed1=0;
 		set_Speed2=0;
 		set_MD49_Commands();
-	}
-	if (input==104){								// "h" = print help again
-		print_help();
 	}
 	if (input==82){									// "R" = read MD49data
 		read_MD49_Data();
@@ -98,16 +116,18 @@ void parse_input (void){
 }
 
 void print_help(void){
+	printf("\033[2J");        /*  clear the screen  */
+	printf("\033[H");         /*  position cursor at top-left corner */
 	printf("---------------------------------------------------------- \n");
 	printf("Enter 'w', 'a', 's', 'd'\n");
 	printf("to drive forward, left, right, backward full speed. \n");
 	printf("Enter 'x' to stop drives \n");
 	printf("---------------------------------------------------------- \n");
-	printf("Enter 'R' to read complete MD49 Data \n");
-	printf("---------------------------------------------------------- \n");
+	//printf("Enter 'R' to read complete MD49 Data \n");
+	//printf("---------------------------------------------------------- \n");
 	printf("Enter 'q' to quit program \n");
-	printf("Enter 'h' to show instructions again \n");
 	printf("---------------------------------------------------------- \n");
+	printf("Press a key...:");
 }
 
 void set_MD49_Commands (void){
@@ -173,7 +193,5 @@ void read_MD49_Data (void){
 	printf("Mode: %i \n",serialBuffer[15]);
 	printf("Regulator: %i \n",serialBuffer[16]);
 	printf("Timeout: %i \n",serialBuffer[17]);
-	printf ("Press a key to continue...");
-	scanf("%s",&input);
 
 }
