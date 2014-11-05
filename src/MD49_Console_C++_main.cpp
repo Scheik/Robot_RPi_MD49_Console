@@ -62,15 +62,12 @@ int main(int argc, char **argv){
 	printf("MD49_Console started \n");
 	print_help();
 
-   //Establish Connection
-   //...
-   //
-
    while(1){
-	   	    input = getch();						// call  non-blocking input function
+	   	   read_MD49_Data();
+	   	   input = getch();						// call  non-blocking input function
 			//scanf("%s",&input);
 			parse_input();
-			//read_MD49_Data();
+
 			if (input==113){								// "q" = quit programm
 				printf("\n");
 				close(fd);									// Close port
@@ -123,8 +120,8 @@ void print_help(void){
 	printf("to drive forward, left, right, backward full speed. \n");
 	printf("Enter 'x' to stop drives \n");
 	printf("---------------------------------------------------------- \n");
-	//printf("Enter 'R' to read complete MD49 Data \n");
-	//printf("---------------------------------------------------------- \n");
+	printf("Enter 'R' to read complete MD49 Data \n");
+	printf("---------------------------------------------------------- \n");
 	printf("Enter 'q' to quit program \n");
 	printf("---------------------------------------------------------- \n");
 	printf("Press a key...:");
@@ -152,22 +149,7 @@ void set_MD49_Commands (void){
 
 void read_MD49_Data (void){
 	serialBuffer[0] = 82;							// 82=R Steuerbyte um alle Daten vom MD49 zu lesen
-	serialBuffer[1] = 0;
-	serialBuffer[2] = 0;
-	serialBuffer[3] = 0;
-	serialBuffer[4] = 0;
-	serialBuffer[5] = 0;
-	serialBuffer[6] = 0;
-	serialBuffer[7] = 0;
-	serialBuffer[8] = 0;
-	serialBuffer[9] = 0;
-	serialBuffer[10] = 0;
-	serialBuffer[11] = 0;
-	serialBuffer[12] = 0;
-	serialBuffer[13] = 0;
-	serialBuffer[14] = 0;
-	serialBuffer[15] = 0;
-	writeBytes(fd, 16);
+	writeBytes(fd, 1);
 	//usleep(400000);
 	//Daten lesen und in Array schreiben
 	readBytes(fd, 18);
@@ -193,5 +175,6 @@ void read_MD49_Data (void){
 	printf("Mode: %i \n",serialBuffer[15]);
 	printf("Regulator: %i \n",serialBuffer[16]);
 	printf("Timeout: %i \n",serialBuffer[17]);
-
+	//printf("Press a key to continue...");
+	//scanf("%s",&input);
 }
