@@ -19,7 +19,6 @@
 
 using namespace std;
 
-void read_MD49_Data (void);
 void set_MD49_Commands (void);
 void print_help(void);
 void parse_input (void);
@@ -61,7 +60,7 @@ int main(int argc, char **argv){
 	printf("MD49_Console started \n");
 	print_help();
 	while(1){
-		read_MD49_Data();
+		//read_MD49_Data();
 		input = getch();						// call  non-blocking input function
 		//scanf("%s",&input);
 		parse_input();
@@ -105,9 +104,6 @@ void parse_input (void){
 		set_Speed2=0;
 		set_MD49_Commands();
 	}
-	if (input==82){									// "R" = read MD49data
-		read_MD49_Data();
-	}
 }
 
 void print_help(void){
@@ -117,8 +113,6 @@ void print_help(void){
 	printf("Enter 'w', 'a', 's', 'd'\n");
 	printf("to drive forward, left, right, backward full speed. \n");
 	printf("Enter 'x' to stop drives \n");
-	printf("---------------------------------------------------------- \n");
-	printf("Enter 'R' to read complete MD49 Data \n");
 	printf("---------------------------------------------------------- \n");
 	printf("Enter 'q' to quit program \n");
 	printf("---------------------------------------------------------- \n");
@@ -143,36 +137,4 @@ void set_MD49_Commands (void){
 	serialBuffer[14] = set_Encoder2Byte3;
 	serialBuffer[15] = set_Encoder2Byte4;
 	writeBytes(fd, 16);
-}
-
-void read_MD49_Data (void){
-	serialBuffer[0] = 82;							// 82=R Steuerbyte um alle Daten vom MD49 zu lesen
-	writeBytes(fd, 1);
-	//usleep(400000);
-	//Daten lesen und in Array schreiben
-	readBytes(fd, 18);
-
-	printf ("MD49-Data read from AVR-Master: \n");
-	printf("====================================================== \n");
-	printf("Encoder1 Byte1: %i ",serialBuffer[0]);
-	printf("Byte2: %i ",serialBuffer[1]);
-	printf("Byte3: % i ",serialBuffer[2]);
-	printf("Byte4: %i \n",serialBuffer[3]);
-	printf("Encoder2 Byte1: %i ",serialBuffer[4]);
-	printf("Byte2: %i ",serialBuffer[5]);
-	printf("Byte3: %i ",serialBuffer[6]);
-	printf("Byte4: %i \n",serialBuffer[7]);
-	printf("====================================================== \n");
-	printf("Speed1: %i ",serialBuffer[8]);
-	printf("Speed2: %i \n",serialBuffer[9]);
-	printf("Volts: %i \n",serialBuffer[10]);
-	printf("Current1: %i ",serialBuffer[11]);
-	printf("Current2: %i \n",serialBuffer[12]);
-	printf("Error: %i \n",serialBuffer[13]);
-	printf("Acceleration: %i \n",serialBuffer[14]);
-	printf("Mode: %i \n",serialBuffer[15]);
-	printf("Regulator: %i \n",serialBuffer[16]);
-	printf("Timeout: %i \n",serialBuffer[17]);
-	printf("Press a key to continue...");
-	scanf("%s",&input);
 }
