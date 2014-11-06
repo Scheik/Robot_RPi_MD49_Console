@@ -57,23 +57,21 @@ int getch()
 
 int main(int argc, char **argv){
 	filedesc = openSerialPort("/dev/ttyAMA0", B38400);
-	if (filedesc == -1) exit(1);
-										// Sleep for UART to power up and set options
+	if (filedesc == -1) exit(1);										// Sleep for UART to power up and set options
 	printf("MD49_Console started \n");
 	print_help();
+	while(1){
+		read_MD49_Data();
+		input = getch();						// call  non-blocking input function
+		//scanf("%s",&input);
+		parse_input();
 
-   while(1){
-	   	   read_MD49_Data();
-	   	   input = getch();						// call  non-blocking input function
-			//scanf("%s",&input);
-			parse_input();
-
-			if (input==113){								// "q" = quit programm
-				printf("\n");
-				close(fd);									// Close port
-				return 0;									// exit
-			}
-    }//end.mainloop
+		if (input==113){								// "q" = quit programm
+			printf("\n");
+			close(fd);									// Close port
+			return 0;									// exit
+		}
+	}//end.mainloop
 }//end.mainfunction
 
 void parse_input (void){
@@ -175,6 +173,6 @@ void read_MD49_Data (void){
 	printf("Mode: %i \n",serialBuffer[15]);
 	printf("Regulator: %i \n",serialBuffer[16]);
 	printf("Timeout: %i \n",serialBuffer[17]);
-	//printf("Press a key to continue...");
-	//scanf("%s",&input);
+	printf("Press a key to continue...");
+	scanf("%s",&input);
 }
